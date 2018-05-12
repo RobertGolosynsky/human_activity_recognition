@@ -1,9 +1,16 @@
 package org.cra.contextrecognition.activities;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -13,14 +20,20 @@ import android.widget.Button;
 import com.xw.repo.BubbleSeekBar;
 
 import org.cra.contextrecognition.R;
+import org.cra.contextrecognition.fragments.FragmentList;
+import org.cra.contextrecognition.fragments.FragmentRecord;
 import org.cra.contextrecognition.model.State;
 import org.cra.contextrecognition.sensors.BackgroundAccelerometerService;
 import org.cra.contextrecognition.services.UserService;
 import org.cra.contextrecognition.network.service.RetrofitService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, BubbleSeekBar.OnProgressChangedListener {
+public class MainActivity extends AppCompatActivity {
+
     private BubbleSeekBar bubbleSeekBar;
     private Button startStopButton;
     private State currentState = State.values()[0];
@@ -29,60 +42,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String apiToken;
     private Retrofit retrofit ;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         apiToken = userService.getApiToken(this);
         if (apiToken == null) {
             promptLogIn();
         }
-        setContentView(R.layout.activity_main);
 
-        retrofit = RetrofitService.getRetrofit(apiToken);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        bubbleSeekBar = findViewById(R.id.seek_bar);
-        bubbleSeekBar.getConfigBuilder()
-                .min(0)
-                .max(2)
-                .progress(0)
-                .sectionCount(2)
-                .trackColor(ContextCompat.getColor(this, R.color.color_gray))
-                .secondTrackColor(ContextCompat.getColor(this, R.color.color_blue))
-                .thumbColor(ContextCompat.getColor(this, R.color.color_blue))
-                .showSectionText()
-                .sectionTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                .sectionTextSize(18)
-                .showThumbText()
-                .thumbTextColor(ContextCompat.getColor(this, R.color.color_red))
-                .thumbTextSize(18)
-                .bubbleColor(ContextCompat.getColor(this, R.color.color_red))
-                .bubbleTextSize(18)
-                .showSectionMark()
-                .seekStepSection()
-                .hideBubble()
-                .touchToSeek()
-                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
-                .build();
+        // Add Fragments to adapter one by one
+        adapter.addFragment(new FragmentRecord(), "Record");
+        adapter.addFragment(new FragmentList(), "Saved readings");
+        viewPager.setAdapter(adapter);
 
-        bubbleSeekBar.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-                State[] states = State.values();
-                for (int i = 0; i < states.length; i++) {
-                    array.append(i, stateStringFor(states[i]));
-                }
-                return array;
-            }
-        });
-        bubbleSeekBar.setOnProgressChangedListener(this);
-
-        startStopButton = findViewById(R.id.start_stop_button);
-        startStopButton.setOnClickListener(this);
-        startStopButton.setText(getString(R.string.start)+" "+stateStringFor(currentState));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
     }
-
 
     private void promptLogIn() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
@@ -91,69 +70,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         finish();
     }
 
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    @Override
-    public void onClick(View v) {
-        isRecording = !isRecording;
-        if (isRecording){
-            int c = ResourcesCompat.getColor(getResources(),R.color.color_gray,null);
-            int buttonColor = ResourcesCompat.getColor(getResources(),R.color.color_red,null);
-            startStopButton.setText(getString(R.string.stop)+" "+stateStringFor(currentState));
-            startStopButton.setBackgroundColor(buttonColor);
-            bubbleSeekBar.setSecondTrackColor(c);
-            bubbleSeekBar.setThumbColor(c);
-            bubbleSeekBar.setEnabled(false);
-            startRecording();
-        }
-        else {
-            int c = ResourcesCompat.getColor(getResources(),R.color.color_blue,null);
-            int buttonColor = ResourcesCompat.getColor(getResources(),R.color.color_green,null);
-            startStopButton.setText(getString(R.string.start)+" "+stateStringFor(currentState));
-            startStopButton.setBackgroundColor(buttonColor);
-            bubbleSeekBar.setSecondTrackColor(c);
-            bubbleSeekBar.setThumbColor(c);
-            bubbleSeekBar.setEnabled(true);
-            stopRecording();
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
         }
 
-    }
-
-    private void startRecording(){
-        Intent intent = new Intent(this, BackgroundAccelerometerService.class);
-//        Log.e(LOG_TAG, "in onPressStartService, userFilePath is "+userFilepath);
-        startService(intent);
-    }
-
-    private void stopRecording(){
-        stopService(new Intent(getApplicationContext(), BackgroundAccelerometerService.class));
-    }
-
-    private String stateStringFor(State state) {
-        switch (state) {
-            case WALK:
-                return getString(R.string.state_walk);
-            case STAND:
-                return getString(R.string.state_stand);
-            case SIT:
-                return getString(R.string.state_sit);
-            default:
-                return "";
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
         }
 
-    }
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
-    @Override
-    public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
-    }
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
 
-    @Override
-    public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
-        currentState = State.fromLiteral(progress);
-        startStopButton.setText(getString(R.string.start)+" "+stateStringFor(currentState));
-    }
-
-    @Override
-    public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }
 

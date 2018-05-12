@@ -1,14 +1,28 @@
 package org.cra.contextrecognition.model;
 
+import android.support.annotation.Nullable;
+
 public enum  State {
-    WALK, STAND, SIT;
+    WALK(0), STAND(1), SIT(2);
 
-    State() {
+    private int code;
+    State(int code) {
+        this.code = code;
     }
 
-    public static State fromLiteral(int i){
-        State[] states = State.values();
-        return states[i%states.length];
-
+    public int getCode() {
+        return code;
     }
+
+    @Nullable
+    public static State fromCode(int i){
+        for (State s: values()){
+            if (s.code == i){
+                return s;
+            }
+        }
+        return null;
+    }
+
+
 }

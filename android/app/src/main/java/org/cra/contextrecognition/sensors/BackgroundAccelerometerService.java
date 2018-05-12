@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.cra.contextrecognition.model.State;
 import org.cra.contextrecognition.network.domain.CRABasicResponse;
 import org.cra.contextrecognition.network.domain.CRAErrorResponse;
 import org.cra.contextrecognition.network.domain.GyroRecord;
@@ -42,7 +43,7 @@ public class BackgroundAccelerometerService extends Service implements SensorEve
     private int period = 10; //ms
     private List<GyroRecord> recordList = new ArrayList<>();
     private ReadingsSaverService readingsSaverService = new ReadingsSaverService();
-
+    private State state;
 
     public BackgroundAccelerometerService() {
     }
@@ -50,7 +51,7 @@ public class BackgroundAccelerometerService extends Service implements SensorEve
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Service Started","Service Started");
-
+        state = State.fromCode(intent.getIntExtra("state", -1));
 
         mInitialized = false;
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -65,7 +66,7 @@ public class BackgroundAccelerometerService extends Service implements SensorEve
         super.onDestroy();
 
         mSensorManager.unregisterListener(this);
-        readingsSaverService.saveReadings(getApplicationContext(),recordList);
+        readingsSaverService.saveReadings(getApplicationContext(),recordList, state);
         Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
     }
 

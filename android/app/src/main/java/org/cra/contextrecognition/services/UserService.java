@@ -1,6 +1,7 @@
 package org.cra.contextrecognition.services;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
@@ -18,7 +19,7 @@ public class UserService {
     }
 
     @Nullable
-    public String getApiToken(Activity activity){
+    public String getApiToken(Context activity){
         SharedPreferences preffs = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         return preffs.getString(API_TOKEN_KEY, null);
     }

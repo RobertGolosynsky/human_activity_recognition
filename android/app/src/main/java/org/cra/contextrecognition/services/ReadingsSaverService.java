@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.internal.bind.TimeTypeAdapter;
 
 
+import org.cra.contextrecognition.model.State;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,14 +23,15 @@ import java.util.List;
 
 public class ReadingsSaverService {
     private final String filePrefix = "readings";
-    private SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+    private DateFormat sdf = SimpleDateFormat.getDateTimeInstance();
 
 
-    public void saveReadings(Context context ,List readings) {
+    public void saveReadings(Context context, List readings, State state) {
 
         FileOutputStream f = null;
         try {
-            f = new FileOutputStream(new File(context.getFilesDir() + "/" + filePrefix + "-" + sdf.format(new Date())));
+            String fileName = filePrefix + "." + state.toString() + "." + readings.size() + "." + sdf.format(new Date());
+            f = new FileOutputStream(new File(context.getFilesDir() + "/" + fileName));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
             o.writeObject(readings);

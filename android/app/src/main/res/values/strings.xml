@@ -9,4 +9,7 @@
     <string name="login_required">Login required</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="list_item_state">State: %1$s</string>
+    <string name="list_item_date">Timestamp: %1$s</string>
+    <string name="list_item_length">Readings count: %1$s</string>
 </resources>
