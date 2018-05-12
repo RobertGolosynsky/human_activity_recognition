@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Context Recognition</string>
+    <string name="state_walk">Walk</string>
+    <string name="state_stand">Stand</string>
+    <string name="state_sit">Sit</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="sensor_data_collector">Sensor data collector</string>
+    <string name="login_required">Login required</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+</resources>
