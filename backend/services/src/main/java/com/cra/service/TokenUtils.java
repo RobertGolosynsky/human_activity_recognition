@@ -29,10 +29,10 @@ public class TokenUtils {
     private final String AUDIENCE_MOBILE = "mobile";
     private final String AUDIENCE_TABLET = "tablet";
 
-    @Value("${ffriends.token.secret}")
+    @Value("${cra.token.secret}")
     private String secret;
 
-    @Value("${ffriends.token.expiration}")
+    @Value("${cra.token.expiration}")
     private Long expiration;
 
     public String getUsernameFromToken(String token) {

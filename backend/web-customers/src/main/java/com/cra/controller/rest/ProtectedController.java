@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${ffriends.route.protected}")
+@RequestMapping("${cra.route.protected}")
 public class ProtectedController {
     /**
      This is an example of some different kinds of granular restriction for endpoints. You can use the built-in SPEL expressions

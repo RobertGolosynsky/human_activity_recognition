@@ -5,7 +5,7 @@
 
     <parent>
         <artifactId>web-parent</artifactId>
-        <groupId>com.ffriends.web</groupId>
+        <groupId>com.cra.web</groupId>
         <version>1.0</version>
     </parent>
 

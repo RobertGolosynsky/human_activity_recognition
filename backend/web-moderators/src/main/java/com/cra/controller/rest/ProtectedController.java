@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${ffriends.route.protected}")
+@RequestMapping("${cra.route.protected}")
 public class ProtectedController {
 
     /**

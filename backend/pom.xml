@@ -28,7 +28,7 @@
         <junit.version>4.12</junit.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
         <coveralls-maven-plugin.version>4.1.0</coveralls-maven-plugin.version>
-        <docker.image.prefix>ffriends</docker.image.prefix>
+        <docker.image.prefix>cra</docker.image.prefix>
     </properties>
 
     <parent>
@@ -59,6 +59,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.mobile</groupId>
             <artifactId>spring-mobile-device</artifactId>
@@ -83,6 +84,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

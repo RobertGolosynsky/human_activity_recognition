@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>web-parent</artifactId>
-        <groupId>com.ffriends.web</groupId>
+        <groupId>com.cra.web</groupId>
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -18,12 +18,12 @@
             <version>${apache-commons.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ffriends.web</groupId>
+            <groupId>com.cra.web</groupId>
             <artifactId>domain</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.ffriends.web</groupId>
+            <groupId>com.cra.web</groupId>
             <artifactId>repository</artifactId>
             <version>1.0</version>
         </dependency>

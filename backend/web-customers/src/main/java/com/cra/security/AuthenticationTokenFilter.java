@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
-    @Value("${ffriends.token.header}")
+    @Value("${cra.token.header}")
     private String tokenHeader;
 
     @Autowired

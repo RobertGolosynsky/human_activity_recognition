@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("${ffriends.route.authentication}")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    @Value("${ffriends.token.header}")
+    @Value("${cra.token.header}")
     private String tokenHeader;
 
     @Autowired
@@ -59,7 +59,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 
-    @RequestMapping(value = "${ffriends.route.authentication.refresh}", method = RequestMethod.GET)
+    @RequestMapping(value = "/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
         String token = request.getHeader(this.tokenHeader);
         if (token == null){
