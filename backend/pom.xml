@@ -11,8 +11,7 @@
         <module>domain</module>
         <module>repository</module>
         <module>services</module>
-        <module>web-customers</module>
-        <module>web-moderators</module>
+        <module>web-users</module>
     </modules>
     <packaging>pom</packaging>
 

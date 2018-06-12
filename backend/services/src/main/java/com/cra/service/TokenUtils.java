@@ -17,17 +17,7 @@ import java.util.Map;
 @Component
 public class TokenUtils {
 
-
-    public interface ExtendedUserDetails extends UserDetails{
-        Date getLastPasswordReset();
-    }
-
     private final Logger logger = Logger.getLogger(this.getClass());
-
-    private final String AUDIENCE_UNKNOWN = "unknown";
-    private final String AUDIENCE_WEB = "web";
-    private final String AUDIENCE_MOBILE = "mobile";
-    private final String AUDIENCE_TABLET = "tablet";
 
     @Value("${cra.token.secret}")
     private String secret;
@@ -68,17 +58,6 @@ public class TokenUtils {
         return expiration;
     }
 
-    public String getAudienceFromToken(String token) {
-        String audience;
-        try {
-            final Claims claims = this.getClaimsFromToken(token);
-            audience = (String) claims.get("audience");
-        } catch (Exception e) {
-            audience = null;
-        }
-        return audience;
-    }
-
     private Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
@@ -105,31 +84,9 @@ public class TokenUtils {
         return expiration.before(this.generateCurrentDate());
     }
 
-    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
-        return (lastPasswordReset != null && created.before(lastPasswordReset));
-    }
-
-    private String generateAudience(Device device) {
-        String audience = this.AUDIENCE_UNKNOWN;
-        if (device.isNormal()) {
-            audience = this.AUDIENCE_WEB;
-        } else if (device.isTablet()) {
-            audience = AUDIENCE_TABLET;
-        } else if (device.isMobile()) {
-            audience = AUDIENCE_MOBILE;
-        }
-        return audience;
-    }
-
-    private Boolean ignoreTokenExpiration(String token) {
-        String audience = this.getAudienceFromToken(token);
-        return (this.AUDIENCE_TABLET.equals(audience) || this.AUDIENCE_MOBILE.equals(audience));
-    }
-
-    public String generateToken(UserDetails userDetails, Device device) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<String, Object>();
         claims.put("sub", userDetails.getUsername());
-        claims.put("audience", this.generateAudience(device));
         claims.put("created", this.generateCurrentDate());
         return this.generateToken(claims);
     }
@@ -152,11 +109,6 @@ public class TokenUtils {
         }
     }
 
-    public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
-        final Date created = this.getCreatedDateFromToken(token);
-        return (!(this.isCreatedBeforeLastPasswordReset(created, lastPasswordReset)) && (!(this.isTokenExpired(token)) || this.ignoreTokenExpiration(token)));
-    }
-
     public String refreshToken(String token) {
         String refreshedToken;
         try {
@@ -169,12 +121,11 @@ public class TokenUtils {
         return refreshedToken;
     }
 
-    public Boolean validateToken(String token, ExtendedUserDetails userDetails) {
+    public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = this.getUsernameFromToken(token);
         final Date created = this.getCreatedDateFromToken(token);
         final Date expiration = this.getExpirationDateFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !(this.isTokenExpired(token))
-                && !(this.isCreatedBeforeLastPasswordReset(created, userDetails.getLastPasswordReset())));
+        return (username.equals(userDetails.getUsername()) && !(this.isTokenExpired(token)));
     }
 
 }

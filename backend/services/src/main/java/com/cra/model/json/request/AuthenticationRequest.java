@@ -9,7 +9,6 @@ public class AuthenticationRequest extends ModelBase {
 	private String password;
 
 	public AuthenticationRequest() {
-		super();
 	}
 
 	public AuthenticationRequest(String username, String password) {

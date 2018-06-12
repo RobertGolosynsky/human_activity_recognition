@@ -4,9 +4,7 @@ import com.cra.domain.base.DomainBase;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 public class User extends DomainBase {
@@ -14,36 +12,32 @@ public class User extends DomainBase {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotNull
-    @Size(max = 60)
+
+    @Column
     private String password;
-    @NotNull
+
+    @Column
     @Email
-    @Size(max = 255)
     private String email;
-    @NotNull
-    @Size(max = 50)
-    private String firstName;
-    @NotNull
-    @Size(max = 50)
-    private String lastName;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastPasswordReset;
-    @OneToOne
-    private Role role;
+
+    @OneToMany
+    private List<Recording> recordings;
 
     public User() {
     }
 
-    public User(String email, String password, String firstName, String lastName, Role role) {
-        this.password = password;
+    public User(String email, String password) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = role;
-        this.lastPasswordReset = new Date();
+        this.password = password;
     }
 
+    public List<Recording> getRecordings() {
+        return recordings;
+    }
+
+    public void setRecordings(List<Recording> recordings) {
+        this.recordings = recordings;
+    }
 
     public Long getId() {
         return id;
@@ -67,37 +61,5 @@ public class User extends DomainBase {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Date getLastPasswordReset() {
-        return lastPasswordReset;
-    }
-
-    public void setLastPasswordReset(Date lastPasswordReset) {
-        this.lastPasswordReset = lastPasswordReset;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }
