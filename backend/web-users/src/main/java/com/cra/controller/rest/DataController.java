@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/recordings")
-public class ProtectedController {
+public class DataController {
 
     @Autowired
     UserRepository userRepository;
