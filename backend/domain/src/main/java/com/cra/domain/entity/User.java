@@ -23,6 +23,9 @@ public class User extends DomainBase {
     @OneToMany
     private List<Recording> recordings;
 
+    @OneToMany
+    private List<Model> models;
+
     public User() {
     }
 
@@ -61,5 +64,13 @@ public class User extends DomainBase {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Model> getModels() {
+        return models;
+    }
+
+    public void setModels(List<Model> models) {
+        this.models = models;
     }
 }

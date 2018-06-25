@@ -3,16 +3,12 @@ package com.cra.controller.rest;
 import com.cra.domain.entity.Recording;
 import com.cra.domain.entity.User;
 import com.cra.model.json.response.CRAErrorResponse;
-import com.cra.repository.RecordingRepository;
 import com.cra.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,10 +36,9 @@ public class DataController {
 
     @GetMapping("/list")
     public @ResponseBody List<Calendar> getAllData(Principal principal) {
-        User user = userRepository.findByEmail(principal.getName());
+        final User user = userRepository.findByEmail(principal.getName());
 
         return user.getRecordings().stream().map(p -> p.getDate()).collect(Collectors.toList());
     }
-
 
 }
