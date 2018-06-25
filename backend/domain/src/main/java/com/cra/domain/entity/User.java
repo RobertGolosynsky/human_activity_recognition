@@ -4,6 +4,7 @@ import com.cra.domain.base.DomainBase;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Entity
@@ -20,10 +21,10 @@ public class User extends DomainBase {
     @Email
     private String email;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Recording> recordings;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Model> models;
 
     public User() {

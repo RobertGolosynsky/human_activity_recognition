@@ -11,7 +11,7 @@ public class Recording {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<GyroData> data;
 
     @Temporal(TemporalType.TIMESTAMP)
