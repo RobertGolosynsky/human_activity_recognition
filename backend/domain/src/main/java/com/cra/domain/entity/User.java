@@ -21,7 +21,7 @@ public class User extends DomainBase {
     @Email
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Recording> recordings;
 
     @OneToMany(cascade = CascadeType.ALL)

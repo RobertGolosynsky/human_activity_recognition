@@ -3,7 +3,10 @@ package com.cra.controller.rest;
 import com.cra.domain.entity.Recording;
 import com.cra.domain.entity.User;
 import com.cra.model.json.response.CRAErrorResponse;
+import com.cra.repository.RecordingRepository;
 import com.cra.repository.UserRepository;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,9 @@ public class DataController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    RecordingRepository recordingRepository;
+
     @PostMapping("/save")
     public ResponseEntity<?> saveData(@RequestBody Recording recording, Principal principal) {
         User user = userRepository.findByEmail(principal.getName());
@@ -30,7 +36,9 @@ public class DataController {
         } else {
             user.getRecordings().add(recording);
             userRepository.save(user);
-            final RecordingDTO result = new RecordingDTO(recording.getId(), recording.getDate());
+
+            final Recording saved = recordingRepository.getRecordingByDate(recording.getDate());
+            final RecordingDTO result = new RecordingDTO(saved.getId(), saved.getDate());
 
             return ResponseEntity.ok(result);
         }
@@ -55,6 +63,7 @@ public class DataController {
         return ResponseEntity.ok(null);
     }
 
+
     private static class RecordingDTO {
         Long id;
         Calendar date;
@@ -70,6 +79,14 @@ public class DataController {
 
         public void setDate(Calendar date) {
             this.date = date;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public Calendar getDate() {
+            return date;
         }
     }
 
