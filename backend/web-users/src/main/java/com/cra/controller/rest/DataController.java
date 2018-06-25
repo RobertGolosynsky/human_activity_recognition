@@ -46,6 +46,15 @@ public class DataController {
         return result;
     }
 
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<?> deleteRecordingById(Principal principal, @PathVariable Long id) {
+        final User user = userRepository.findByEmail(principal.getName());
+        user.getRecordings().removeIf(p -> p.getId().equals(id));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(null);
+    }
+
     private static class RecordingDTO {
         Long id;
         Calendar date;
