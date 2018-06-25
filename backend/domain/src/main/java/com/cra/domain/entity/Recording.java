@@ -20,6 +20,10 @@ public class Recording {
     @Enumerated(EnumType.ORDINAL)
     private RecordType type;
 
+    public Long getId() {
+        return id;
+    }
+
     public List<GyroData> getData() {
         return data;
     }

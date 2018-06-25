@@ -29,8 +29,14 @@ public class DataController {
             return ResponseEntity.badRequest().body(new CRAErrorResponse("Recording already exists!"));
         } else {
             user.getRecordings().add(recording);
-            userRepository.save(user);
-            return ResponseEntity.ok(null);
+            User savedUser = userRepository.save(user);
+
+            List<RecordingDTO> result = savedUser.getRecordings()
+                    .stream()
+                    .map(p -> new RecordingDTO(p.getId(), p.getDate()))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(result);
         }
     }
 
@@ -39,6 +45,24 @@ public class DataController {
         final User user = userRepository.findByEmail(principal.getName());
 
         return user.getRecordings().stream().map(p -> p.getDate()).collect(Collectors.toList());
+    }
+
+    private static class RecordingDTO {
+        Long id;
+        Calendar date;
+
+        public RecordingDTO(Long id, Calendar date) {
+            this.id = id;
+            this.date = date;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public void setDate(Calendar date) {
+            this.date = date;
+        }
     }
 
 }
