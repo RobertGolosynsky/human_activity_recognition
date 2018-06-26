@@ -1,31 +1,28 @@
 package org.cra.contextrecognition.activities;
 
 import android.content.Intent;
-import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.SparseArray;
-import android.view.View;
 import android.widget.Button;
 
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.xw.repo.BubbleSeekBar;
 
 import org.cra.contextrecognition.R;
-import org.cra.contextrecognition.fragments.FragmentList;
+import org.cra.contextrecognition.fragments.FragmentModels;
+import org.cra.contextrecognition.fragments.FragmentRecordings;
 import org.cra.contextrecognition.fragments.FragmentRecord;
 import org.cra.contextrecognition.model.State;
-import org.cra.contextrecognition.sensors.BackgroundAccelerometerService;
-import org.cra.contextrecognition.services.UserService;
 import org.cra.contextrecognition.network.service.RetrofitService;
+import org.cra.contextrecognition.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,26 +37,30 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRecording = false;
     private UserService userService = new UserService();
     private String apiToken;
-    private Retrofit retrofit ;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         apiToken = userService.getApiToken(this);
-        if (apiToken == null) {
+        if (apiToken == null || apiToken.length()==0) {
             promptLogIn();
         }
+        else {
+            RetrofitService.createRetrofit(apiToken);
+        }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager viewPager = findViewById(R.id.pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         // Add Fragments to adapter one by one
         adapter.addFragment(new FragmentRecord(), "Record");
-        adapter.addFragment(new FragmentList(), "Saved readings");
+        adapter.addFragment(new FragmentRecordings(), "Saved readings");
+        adapter.addFragment(new FragmentModels(), "Models");
         viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 

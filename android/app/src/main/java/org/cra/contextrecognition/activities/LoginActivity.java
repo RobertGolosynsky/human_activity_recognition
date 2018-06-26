@@ -24,7 +24,7 @@ import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
     private Button logInButton;
-    final Retrofit retrofit = RetrofitService.getRetrofit("");
+    final Retrofit retrofit = RetrofitService.createRetrofit(null);
     final UserService userService = new UserService();
 
 
@@ -43,10 +43,11 @@ public class LoginActivity extends AppCompatActivity {
                 String password = ((TextView)findViewById(R.id.password)).getText().toString();
 
                 if (login.length()==0 || password.length()==0){
+                    Toast.makeText(LoginActivity.this,"Credentials required", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                v.setEnabled(false);
+                logInButton.setEnabled(false);
 
                 Call<CRAAuthResponse> call = retrofit
                         .create(CRAWebApi.class)
@@ -59,23 +60,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 call.enqueue(new CRACallback<CRAAuthResponse>(LoginActivity.this) {
 
-
                     @Override
                     public void onSuccess(Call<CRAAuthResponse> call, Response<CRAAuthResponse> response) {
                         onApiTokenReceived(response.body().getToken());
                     }
 
                     @Override
-                    public void onFailure(Call<CRAAuthResponse> call, Response<CRAAuthResponse> response, CRAErrorResponse errorResponse) {
-                        Toast.makeText(LoginActivity.this, errorResponse.getText(), Toast.LENGTH_SHORT).show();
+                    public void finaly() {
                         logInButton.setEnabled(true);
-                    }
-
-                    @Override
-                    public void onFailure(Call<CRAAuthResponse> call, Throwable t) {
-                        super.onFailure(call, t);
-                        logInButton.setEnabled(true);
-                        onApiTokenReceived("");
                     }
                 });
             }
@@ -84,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onApiTokenReceived(String token) {
         userService.saveApiToken(LoginActivity.this, token);
+        RetrofitService.createRetrofit(token);
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(mainIntent);

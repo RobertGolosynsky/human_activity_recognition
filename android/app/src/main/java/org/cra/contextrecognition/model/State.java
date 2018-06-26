@@ -2,8 +2,15 @@ package org.cra.contextrecognition.model;
 
 import android.support.annotation.Nullable;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum  State {
-    WALK(0), STAND(1), SIT(2);
+    @SerializedName("0")
+    WALK(0),
+    @SerializedName("1")
+    STAND(1),
+    @SerializedName("2")
+    SIT(2);
 
     private int code;
     State(int code) {
