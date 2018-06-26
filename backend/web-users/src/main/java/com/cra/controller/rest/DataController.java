@@ -1,13 +1,12 @@
 package com.cra.controller.rest;
 
+import com.cra.domain.entity.RecordType;
 import com.cra.domain.entity.Recording;
 import com.cra.domain.entity.User;
 import com.cra.model.json.response.CRAErrorResponse;
 import com.cra.repository.RecordingRepository;
 import com.cra.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -34,14 +31,17 @@ public class DataController {
         User user = userRepository.findByEmail(principal.getName());
         List<Recording> recordingList = user.getRecordings();
 
-        if (recordingList.stream().anyMatch(p -> p.getDate().equals(recording.getDate()))) {
-            return ResponseEntity.badRequest().body(new CRAErrorResponse("Recording already exists!"));
+        if (recordingList.stream()
+                .anyMatch(p -> p.getDate().equals(recording.getDate()))) {
+            return ResponseEntity.badRequest()
+                    .body(new CRAErrorResponse("Recording already exists!"));
         } else {
             user.getRecordings().add(recording);
             userRepository.save(user);
 
             final Recording saved = recordingRepository.getRecordingByDate(recording.getDate());
-            final RecordingDTO result = new RecordingDTO(saved.getId(), saved.getDate());
+            final RecordingDTO result = new RecordingDTO(saved.getId(), saved.getDate(), saved.getType(),
+                    saved.getData().size());
 
             return ResponseEntity.ok(result);
         }
@@ -52,7 +52,7 @@ public class DataController {
         final User user = userRepository.findByEmail(principal.getName());
         List<RecordingDTO> result = user.getRecordings()
                 .stream()
-                .map(p -> new RecordingDTO(p.getId(), p.getDate()))
+                .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getData().size()))
                 .collect(Collectors.toList());
         return result;
     }
@@ -60,37 +60,20 @@ public class DataController {
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteRecordingById(Principal principal, @PathVariable Long id) {
         final User user = userRepository.findByEmail(principal.getName());
-        user.getRecordings().removeIf(p -> p.getId().equals(id));
+        user.getRecordings()
+                .removeIf(p -> p.getId().equals(id));
         userRepository.save(user);
 
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/list/ids")
-    public ResponseEntity<?> getRecordingsByIds(Principal principal, @RequestBody IdWrapper idWrapper) {
-        final User user = userRepository.findByEmail(principal.getName());
-        final Map<Long, Recording> recordingsMap = user.getRecordings()
-                .stream()
-                .collect(Collectors.toMap(Recording::getId, Function.identity()));
-        final List<Recording> recordingList = idWrapper.getRecordings()
-                .stream()
-                .map(p -> recordingsMap.get(p))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(recordingList);
-    }
-
     @Getter
     @RequiredArgsConstructor
     private static class RecordingDTO {
-        final Long id;
-        final Calendar date;
+        private final Long id;
+        private final Calendar date;
+        private final RecordType type;
+        private final int length;
     }
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    private static class IdWrapper {
-        private List<Long> recordings;
-    }
 }
