@@ -5,7 +5,9 @@ import com.cra.domain.entity.User;
 import com.cra.model.json.response.CRAErrorResponse;
 import com.cra.repository.RecordingRepository;
 import com.cra.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -62,10 +66,31 @@ public class DataController {
         return ResponseEntity.ok(null);
     }
 
+    @PostMapping("/list/ids")
+    public ResponseEntity<?> getRecordingsByIds(Principal principal, @RequestBody IdWrapper idWrapper) {
+        final User user = userRepository.findByEmail(principal.getName());
+        final Map<Long, Recording> recordingsMap = user.getRecordings()
+                .stream()
+                .collect(Collectors.toMap(Recording::getId, Function.identity()));
+        final List<Recording> recordingList = idWrapper.getRecordings()
+                .stream()
+                .map(p -> recordingsMap.get(p))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(recordingList);
+    }
+
     @Getter
     @RequiredArgsConstructor
     private static class RecordingDTO {
         final Long id;
         final Calendar date;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class IdWrapper {
+        private List<Long> recordings;
     }
 }
