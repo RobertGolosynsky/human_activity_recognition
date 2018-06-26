@@ -10,6 +10,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="list_item_state">State: %1$s</string>
-    <string name="list_item_date">Timestamp: %1$s</string>
-    <string name="list_item_length">Readings count: %1$s</string>
+    <string name="list_item_date">%1$s</string>
+    <string name="list_item_length">Length: %1$s</string>
+    <string name="model_list_item_score">%.2f</string>
 </resources>

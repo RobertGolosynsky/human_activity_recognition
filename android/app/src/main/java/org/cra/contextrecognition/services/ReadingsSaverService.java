@@ -76,6 +76,9 @@ public class ReadingsSaverService {
         }
         return  fileNames;
     }
+    public void remove(Context context, String fileName){
+        context.deleteFile(fileName);
+    }
 
 
 }

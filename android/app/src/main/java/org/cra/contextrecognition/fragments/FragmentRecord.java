@@ -49,7 +49,7 @@ public class FragmentRecord extends SightFragment implements BubbleSeekBar.OnPro
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         apiToken = userService.getApiToken(getContext());
-        retrofit = RetrofitService.getRetrofit(apiToken);
+        retrofit = RetrofitService.getInstance();
 
         bubbleSeekBar = view.findViewById(R.id.seek_bar);
         bubbleSeekBar.getConfigBuilder()
