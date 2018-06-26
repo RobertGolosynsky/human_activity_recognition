@@ -1,3 +1,36 @@
+#built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+
+# OSX files
+.DS_Store
+
+# Android Studio
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+
+build/
+.navigation
+captures/
+output.json 
+
+#NDK
+obj/
+.externalNativeBuild
+
 # Java/Maven
 target/
 *.class
@@ -6,7 +39,6 @@ target/
 *.ear
 
 # OS
-.DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
@@ -95,9 +127,7 @@ buildSrc/build
 spring-*/src/main/java/META-INF/MANIFEST.MF
 
 # IDEA artifacts and output dirs
-*.iml
 *.ipr
-.idea
 
 out
 test-output
