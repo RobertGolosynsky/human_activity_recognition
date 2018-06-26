@@ -1,9 +1,14 @@
 package com.cra.domain.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.Calendar;
 
 @Entity
+@Getter
+@EqualsAndHashCode
 public class Model {
 
     @Id
@@ -19,31 +24,4 @@ public class Model {
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar date;
 
-    public Long getId() {
-        return id;
-    }
-
-    public float getScore() {
-        return score;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Calendar getDate() {
-        return date;
-    }
-
-    public void setDate(Calendar date) {
-        this.date = date;
-    }
 }

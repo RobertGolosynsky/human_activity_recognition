@@ -5,8 +5,8 @@ import com.cra.domain.entity.User;
 import com.cra.model.json.response.CRAErrorResponse;
 import com.cra.repository.RecordingRepository;
 import com.cra.repository.UserRepository;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +16,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/api/recordings")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DataController {
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RecordingRepository recordingRepository;
+    private final UserRepository userRepository;
+    private final RecordingRepository recordingRepository;
 
     @PostMapping("/save")
     public ResponseEntity<?> saveData(@RequestBody Recording recording, Principal principal) {
@@ -63,31 +62,10 @@ public class DataController {
         return ResponseEntity.ok(null);
     }
 
-
+    @Getter
+    @RequiredArgsConstructor
     private static class RecordingDTO {
-        Long id;
-        Calendar date;
-
-        public RecordingDTO(Long id, Calendar date) {
-            this.id = id;
-            this.date = date;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public void setDate(Calendar date) {
-            this.date = date;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public Calendar getDate() {
-            return date;
-        }
+        final Long id;
+        final Calendar date;
     }
-
 }

@@ -1,46 +1,34 @@
 package com.cra.controller.rest;
 
-import com.cra.domain.entity.User;
 import com.cra.factory.SecurityUser;
-import com.cra.factory.SecurityUserFactory;
 import com.cra.model.json.request.AuthenticationRequest;
 import com.cra.model.json.response.AuthenticationResponse;
 import com.cra.service.TokenUtils;
 import com.cra.service.interfaces.ExtendedUserDetailsService;
-import org.apache.log4j.Logger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/login")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationController {
-
-    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Value("${cra.token.header}")
     private String tokenHeader;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private TokenUtils tokenUtils;
-
-    @Autowired
-    private ExtendedUserDetailsService extendedUserDetailsService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenUtils tokenUtils;
+    private final ExtendedUserDetailsService extendedUserDetailsService;
 
     @PostMapping
     public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequest authenticationRequest) throws AuthenticationException {

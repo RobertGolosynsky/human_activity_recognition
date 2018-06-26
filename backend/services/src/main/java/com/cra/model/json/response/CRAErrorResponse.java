@@ -1,8 +1,11 @@
 package com.cra.model.json.response;
 
+import lombok.Getter;
+
+@Getter
 public class CRAErrorResponse {
 
-    String error;
+    private String error;
 
     public CRAErrorResponse(String error) {
         this.error = error;

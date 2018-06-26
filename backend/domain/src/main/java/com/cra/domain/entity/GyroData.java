@@ -1,9 +1,13 @@
 package com.cra.domain.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import javax.persistence.*;
-import java.util.Calendar;
 
 @Entity
+@Getter
+@EqualsAndHashCode
 public class GyroData {
 
     @Id
@@ -19,27 +23,4 @@ public class GyroData {
     @Column
     float z;
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setZ(float z) {
-        this.z = z;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public float getZ() {
-        return z;
-    }
 }

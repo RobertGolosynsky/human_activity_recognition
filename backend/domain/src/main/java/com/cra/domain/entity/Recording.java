@@ -1,10 +1,15 @@
 package com.cra.domain.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.List;
 
 @Entity
+@Getter
+@EqualsAndHashCode
 public class Recording {
 
     @Id
@@ -19,32 +24,5 @@ public class Recording {
 
     @Enumerated(EnumType.ORDINAL)
     private RecordType type;
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<GyroData> getData() {
-        return data;
-    }
-
-    public void setData(List<GyroData> data) {
-        this.data = data;
-    }
-
-    public Calendar getDate() {
-        return date;
-    }
-
-    public void setDate(Calendar date) {
-        this.date = date;
-    }
-
-    public RecordType getType() {
-        return type;
-    }
-
-    public void setType(RecordType type) {
-        this.type = type;
-    }
+    
 }
