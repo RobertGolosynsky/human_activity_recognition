@@ -2,6 +2,7 @@ package com.cra.domain.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Recording {
 
     @Id
@@ -24,5 +26,7 @@ public class Recording {
 
     @Enumerated(EnumType.ORDINAL)
     private RecordType type;
-    
+
+    @Column
+    private Long duration;
 }

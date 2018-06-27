@@ -23,4 +23,7 @@ public class GyroData {
     @Column
     float z;
 
+    @Column
+    Long time;
+
 }

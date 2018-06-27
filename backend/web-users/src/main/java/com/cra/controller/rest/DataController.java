@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -37,9 +38,12 @@ public class DataController {
                     .body(new CRAErrorResponse("Recording already exists!"));
         } else {
             user.getRecordings().add(recording);
-            userRepository.save(user);
+            final User savedUser  = userRepository.save(user);
 
-            final Recording saved = recordingRepository.getRecordingByDate(recording.getDate());
+            final Recording saved = savedUser.getRecordings().stream()
+                    .filter(p -> p.getDate().equals(recording.getDate()))
+                    .findFirst()
+                    .get();
             final RecordingDTO result = new RecordingDTO(saved.getId(), saved.getDate(), saved.getType(),
                     saved.getData().size());
 
@@ -47,8 +51,33 @@ public class DataController {
         }
     }
 
+    @PostMapping("/saveAll")
+    public ResponseEntity<?> saveData(@RequestBody List<Recording> recordings, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName());
+        List<Recording> currentRecordings = user.getRecordings();
+
+        if (currentRecordings.stream().
+                anyMatch(p -> recordings.stream().anyMatch(s -> s.getDate().equals(p.getDate())))) {
+            return ResponseEntity.badRequest()
+                    .body(new CRAErrorResponse("One of recordings already exists!"));
+        } else {
+            user.getRecordings().addAll(recordings);
+
+            final Set<Calendar> dates = recordings.stream().map(p -> p.getDate()).collect(Collectors.toSet());
+            final User savedUser  = userRepository.save(user);
+
+            final List<Recording> saved = savedUser.getRecordings().stream().filter(p -> dates.contains(p.getDate())).collect(Collectors.toList());
+            final List<RecordingDTO> result = saved.stream()
+                    .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getData().size()))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(result);
+        }
+    }
+
     @GetMapping("/list")
-    public @ResponseBody List<RecordingDTO> getAllData(Principal principal) {
+    public @ResponseBody
+    List<RecordingDTO> getAllData(Principal principal) {
         final User user = userRepository.findByEmail(principal.getName());
         List<RecordingDTO> result = user.getRecordings()
                 .stream()
