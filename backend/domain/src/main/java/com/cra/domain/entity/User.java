@@ -1,10 +1,9 @@
 package com.cra.domain.entity;
 
-import com.cra.domain.base.DomainBase;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Email;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +12,8 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class User extends DomainBase {
+@ToString
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,9 +22,8 @@ public class User extends DomainBase {
     @Column
     private String password;
 
-    @Column
-    @Email
-    private String email;
+    @Column(unique = true)
+    private String login;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Recording> recordings;
@@ -32,8 +31,8 @@ public class User extends DomainBase {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Model> models;
 
-    public User(String email, String password) {
-        this.email = email;
+    public User(String login, String password) {
+        this.login = login;
         this.password = password;
     }
 }

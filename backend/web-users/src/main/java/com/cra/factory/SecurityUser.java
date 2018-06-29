@@ -1,12 +1,10 @@
 package com.cra.factory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.cra.service.TokenUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Date;
 
 public class SecurityUser implements UserDetails {
 
@@ -14,14 +12,14 @@ public class SecurityUser implements UserDetails {
 
     private String password;
 
-    private String email;
+    private String login;
 
     public SecurityUser() {
     }
 
-    public SecurityUser(Long id, String email, String password) {
+    public SecurityUser(Long id, String login, String password) {
         this.setId(id);
-        this.setEmail(email);
+        this.setLogin(login);
         this.setPassword(password);
     }
 
@@ -44,7 +42,7 @@ public class SecurityUser implements UserDetails {
     }
 
     public String getUsername() {
-        return this.email;
+        return this.login;
     }
 
     @Override
@@ -71,11 +69,11 @@ public class SecurityUser implements UserDetails {
         this.password = password;
     }
 
-    public String getEmail() {
-        return this.email;
+    public String getLogin() {
+        return this.login;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

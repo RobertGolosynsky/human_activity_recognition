@@ -27,7 +27,7 @@ public class DataController {
 
     @PostMapping("/save")
     public ResponseEntity<?> saveData(@RequestBody Recording recording, Principal principal) {
-        User user = userRepository.findByEmail(principal.getName());
+        User user = userRepository.findByLogin(principal.getName());
         List<Recording> recordingList = user.getRecordings();
 
         if (recordingList
@@ -54,7 +54,7 @@ public class DataController {
 
     @PostMapping("/saveAll")
     public ResponseEntity<?> saveData(@RequestBody List<Recording> recordings, Principal principal) {
-        User user = userRepository.findByEmail(principal.getName());
+        User user = userRepository.findByLogin(principal.getName());
         List<Recording> currentRecordings = user.getRecordings();
 
         if (currentRecordings
@@ -91,7 +91,7 @@ public class DataController {
     @GetMapping("/list")
     public @ResponseBody
     List<RecordingDTO> getAllData(Principal principal) {
-        final User user = userRepository.findByEmail(principal.getName());
+        final User user = userRepository.findByLogin(principal.getName());
         List<RecordingDTO> result = user
                 .getRecordings()
                 .stream()
@@ -102,7 +102,7 @@ public class DataController {
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteRecordingById(Principal principal, @PathVariable Long id) {
-        final User user = userRepository.findByEmail(principal.getName());
+        final User user = userRepository.findByLogin(principal.getName());
         user.getRecordings()
                 .removeIf(p -> p.getId().equals(id));
         userRepository.save(user);

@@ -5,6 +5,8 @@ import com.cra.model.json.request.AuthenticationRequest;
 import com.cra.model.json.response.AuthenticationResponse;
 import com.cra.service.TokenUtils;
 import com.cra.service.interfaces.ExtendedUserDetailsService;
+import com.cra.service.interfaces.RegistrationService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ public class AuthenticationController {
     private String tokenHeader;
     private final AuthenticationManager authenticationManager;
     private final TokenUtils tokenUtils;
+    private final RegistrationService registrationService;
     private final ExtendedUserDetailsService extendedUserDetailsService;
 
     @PostMapping
@@ -65,8 +68,21 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthenticationResponse(refreshedToken));
     }
 
+    @PostMapping(value = "/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createUser(@RequestBody RegistrationInfo registrationInfo) {
+        registrationService.registerUser(registrationInfo.getLogin(), registrationInfo.getPassword());
+    }
+
     @GetMapping(value = "/test")
     public String test(HttpServletRequest request) {
         return "Hello";
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    private static final class RegistrationInfo {
+        private final String login;
+        private final String password;
     }
 }

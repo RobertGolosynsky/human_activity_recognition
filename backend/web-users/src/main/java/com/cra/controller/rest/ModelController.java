@@ -37,12 +37,12 @@ public class ModelController {
 
     @GetMapping("/list")
     public @ResponseBody List<Model> getModels(Principal principal) {
-        return userRepository.findByEmail(principal.getName()).getModels();
+        return userRepository.findByLogin(principal.getName()).getModels();
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> getRecordingsByIds(Principal principal, @RequestBody ModelConfig modelConfig) {
-        final User user = userRepository.findByEmail(principal.getName());
+        final User user = userRepository.findByLogin(principal.getName());
         final Map<Long, Recording> recordingsMap = user
                 .getRecordings()
                 .stream()

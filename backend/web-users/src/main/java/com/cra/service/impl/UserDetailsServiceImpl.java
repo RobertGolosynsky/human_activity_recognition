@@ -4,7 +4,6 @@ import com.cra.domain.entity.User;
 import com.cra.factory.SecurityUser;
 import com.cra.factory.SecurityUserFactory;
 import com.cra.repository.UserRepository;
-import com.cra.service.TokenUtils;
 import com.cra.service.interfaces.ExtendedUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,11 +16,11 @@ public class UserDetailsServiceImpl implements ExtendedUserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public SecurityUser loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = this.userRepository.findByEmail(email);
+    public SecurityUser loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = this.userRepository.findByLogin(login);
 
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
+            throw new UsernameNotFoundException(String.format("No user found with login '%s'.", login));
         } else {
             return SecurityUserFactory.create(user);
         }

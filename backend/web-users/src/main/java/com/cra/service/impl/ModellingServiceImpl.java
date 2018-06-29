@@ -5,7 +5,7 @@ import com.cra.domain.entity.Recording;
 import com.cra.service.interfaces.ModellingService;
 import com.cra.util.Coordinate;
 import com.cra.util.ModelConfig;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class ModellingServiceImpl implements ModellingService {
 
     public List<List<List<GyroData>>> getPartitions(final ModelConfig modelConfig, final List<Recording> recordingList) {
