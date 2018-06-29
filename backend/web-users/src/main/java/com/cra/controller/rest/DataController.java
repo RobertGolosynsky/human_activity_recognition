@@ -26,9 +26,9 @@ public class DataController {
     private final UserRepository userRepository;
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveData(@RequestBody Recording recording, Principal principal) {
-        User user = userRepository.findByLogin(principal.getName());
-        List<Recording> recordingList = user.getRecordings();
+    public ResponseEntity<?> saveData(@RequestBody final Recording recording, final Principal principal) {
+        final User user = userRepository.findByLoginIgnoreCase(principal.getName());
+        final List<Recording> recordingList = user.getRecordings();
 
         if (recordingList
                 .stream()
@@ -53,9 +53,9 @@ public class DataController {
     }
 
     @PostMapping("/saveAll")
-    public ResponseEntity<?> saveData(@RequestBody List<Recording> recordings, Principal principal) {
-        User user = userRepository.findByLogin(principal.getName());
-        List<Recording> currentRecordings = user.getRecordings();
+    public ResponseEntity<?> saveData(@RequestBody final List<Recording> recordings, final Principal principal) {
+        final User user = userRepository.findByLoginIgnoreCase(principal.getName());
+        final List<Recording> currentRecordings = user.getRecordings();
 
         if (currentRecordings
                 .stream()
@@ -89,10 +89,9 @@ public class DataController {
     }
 
     @GetMapping("/list")
-    public @ResponseBody
-    List<RecordingDTO> getAllData(Principal principal) {
-        final User user = userRepository.findByLogin(principal.getName());
-        List<RecordingDTO> result = user
+    public @ResponseBody List<RecordingDTO> getAllData(final Principal principal) {
+        final User user = userRepository.findByLoginIgnoreCase(principal.getName());
+        final List<RecordingDTO> result = user
                 .getRecordings()
                 .stream()
                 .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getData().size()))
@@ -101,8 +100,8 @@ public class DataController {
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<?> deleteRecordingById(Principal principal, @PathVariable Long id) {
-        final User user = userRepository.findByLogin(principal.getName());
+    public ResponseEntity<?> deleteRecordingById(final Principal principal, @PathVariable final Long id) {
+        final User user = userRepository.findByLoginIgnoreCase(principal.getName());
         user.getRecordings()
                 .removeIf(p -> p.getId().equals(id));
         userRepository.save(user);

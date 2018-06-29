@@ -17,7 +17,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public User registerUser(String login, String password) {
-        if (userRepository.findByLogin(login) != null) {
+        if (userRepository.findByLoginIgnoreCase(login) != null) {
             throw new RuntimeException("Username already exists!");
         }
 

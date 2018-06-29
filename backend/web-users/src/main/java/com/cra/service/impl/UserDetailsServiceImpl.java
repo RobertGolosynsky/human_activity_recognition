@@ -17,7 +17,7 @@ public class UserDetailsServiceImpl implements ExtendedUserDetailsService {
 
     @Override
     public SecurityUser loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = this.userRepository.findByLogin(login);
+        User user = this.userRepository.findByLoginIgnoreCase(login);
 
         if (user == null) {
             throw new UsernameNotFoundException(String.format("No user found with login '%s'.", login));

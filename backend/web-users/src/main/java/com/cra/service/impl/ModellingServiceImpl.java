@@ -70,7 +70,7 @@ public class ModellingServiceImpl implements ModellingService {
     }
 
     public List<Map<Coordinate, Double>> extractVariance(final List<List<GyroData>> partitions,
-                                                          final List<Map<Coordinate, Double>> average) {
+                                                         final List<Map<Coordinate, Double>> average) {
         final List<Map<Coordinate, Double>> variance = new ArrayList<>(partitions.size());
 
         partitions.stream()

@@ -37,12 +37,12 @@ public class ModelController {
 
     @GetMapping("/list")
     public @ResponseBody List<Model> getModels(Principal principal) {
-        return userRepository.findByLogin(principal.getName()).getModels();
+        return userRepository.findByLoginIgnoreCase(principal.getName()).getModels();
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> getRecordingsByIds(Principal principal, @RequestBody ModelConfig modelConfig) {
-        final User user = userRepository.findByLogin(principal.getName());
+        final User user = userRepository.findByLoginIgnoreCase(principal.getName());
         final Map<Long, Recording> recordingsMap = user
                 .getRecordings()
                 .stream()
@@ -66,36 +66,38 @@ public class ModelController {
     }
 
     public String doWeka(ModelConfig modelConfig, List<Recording> recordingList) {
-        Attribute xAverage = new Attribute("xAverage");
-        Attribute yAverage = new Attribute("yAverage");
-        Attribute zAverage = new Attribute("zAverage");
+        final Attribute xAverage = new Attribute("xAverage");
+        final Attribute yAverage = new Attribute("yAverage");
+        final Attribute zAverage = new Attribute("zAverage");
 
-        Attribute xVar = new Attribute("xVar");
-        Attribute yVar = new Attribute("yVar");
-        Attribute zVar = new Attribute("zVar");
+        final Attribute xVar = new Attribute("xVar");
+        final Attribute yVar = new Attribute("yVar");
+        final Attribute zVar = new Attribute("zVar");
 
-        Attribute magnitVar = new Attribute("magnitVar");
+        final Attribute magnitVar = new Attribute("magnitVar");
 
-        List<String> types = Arrays.asList(RecordType.values()).stream()
+        final List<String> types = Arrays.asList(RecordType.values()).stream()
                 .map(RecordType::toString)
                 .collect(Collectors.toList());
-        Attribute cls = new Attribute("cls", types);
+        final Attribute cls = new Attribute("cls", types);
 
-        ArrayList<Attribute> attributes = new ArrayList<>(Arrays.asList(xAverage, yAverage, zAverage, xVar, yVar, zVar, magnitVar, cls));
+        final ArrayList<Attribute> attributes = new ArrayList<>(Arrays.asList(xAverage, yAverage, zAverage, xVar,
+                yVar, zVar, magnitVar, cls));
 
         final List<List<List<GyroData>>> partitions = modellingService.getPartitions(modelConfig, recordingList);
 
         int size = (int) partitions.stream()
                 .mapToLong(p -> p.stream().count()).sum();
 
-        Instances instances = new Instances("Rel", attributes, size);
+        final Instances instances = new Instances("Rel", attributes, size);
         instances.setClass(cls);
 
         partitions.stream()
                 .forEach(p -> {
                     final List<Map<Coordinate, Double>> average = modellingService.extractAverage(p);
                     final List<Map<Coordinate, Double>> variance = modellingService.extractVariance(p, average);
-                    final List<Double> magnitudeVar = modellingService.extractMagnitudeVariance(modellingService.extractMagnitude(p));
+                    final List<Double> magnitudeVar = modellingService.extractMagnitudeVariance(modellingService
+                            .extractMagnitude(p));
 
                     final Instance instance = new DenseInstance(8);
                     int index = partitions.indexOf(p);
@@ -113,13 +115,13 @@ public class ModelController {
                 });
 
         try {
-            Classifier cModel = new NaiveBayes();
-            Evaluation eTest = new Evaluation(instances);
+            final Classifier cModel = new NaiveBayes();
+            final Evaluation eTest = new Evaluation(instances);
 
             cModel.buildClassifier(instances);
             eTest.evaluateModel(cModel, instances);
 
-            String strSummary = eTest.toSummaryString();
+            final String strSummary = eTest.toSummaryString();
             System.out.println(strSummary);
 
             return strSummary;
