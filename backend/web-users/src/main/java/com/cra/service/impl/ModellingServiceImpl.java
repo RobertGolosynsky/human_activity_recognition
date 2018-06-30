@@ -215,11 +215,10 @@ public class ModellingServiceImpl implements ModellingService {
             cModel.buildClassifier(instances);
             eTest.evaluateModel(cModel, instances);
 
-            final String strSummary = eTest.toSummaryString();
             final Blob classifierBlob = BlobProxy.generateProxy(
                     SerializationUtils.serialize((Serializable) cModel));
 
-            final Model model = new Model(eTest.weightedFMeasure(),
+            final Model model = new Model(eTest.unweightedMicroFmeasure(),
                     cModel.getClass().getSimpleName(),
                     Calendar.getInstance(), classifierBlob);
 
