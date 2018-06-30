@@ -21,7 +21,9 @@ public class Recording {
     @OneToMany(cascade = CascadeType.ALL)
     private List<GyroData> data;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
+    //@Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Column(columnDefinition="DATETIME(3)")
     private Calendar date;
 
     @Enumerated(EnumType.ORDINAL)
