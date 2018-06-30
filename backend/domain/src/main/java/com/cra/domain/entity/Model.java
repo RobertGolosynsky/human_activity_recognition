@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.util.Calendar;
 
 @Entity
@@ -16,12 +17,22 @@ public class Model {
     private Long id;
 
     @Column
-    private float score;
+    private double score;
 
     @Column
-    private String name;
+    private String classifierName;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar date;
 
+    @Column
+    private Blob classifier;
+
+    public Model(double score, String classifierName, Calendar date, Blob
+            classifier) {
+        this.score = score;
+        this.classifierName = classifierName;
+        this.date = date;
+        this.classifier = classifier;
+    }
 }

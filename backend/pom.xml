@@ -22,12 +22,12 @@
         <spring-framework.version>4.1.6.RELEASE</spring-framework.version>
         <jjwt.version>0.4</jjwt.version>
         <h2.version>1.4.188</h2.version>
-        <!--<jackson.version>2.5.3</jackson.version>-->
         <apache-commons.version>3.0</apache-commons.version>
         <junit.version>4.12</junit.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
         <coveralls-maven-plugin.version>4.1.0</coveralls-maven-plugin.version>
         <docker.image.prefix>cra</docker.image.prefix>
+        <!--<jackson.version>2.5.3</jackson.version>-->
     </properties>
 
     <parent>
@@ -35,7 +35,6 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.8.RELEASE</version>
     </parent>
-
 
     <dependencies>
         <dependency>

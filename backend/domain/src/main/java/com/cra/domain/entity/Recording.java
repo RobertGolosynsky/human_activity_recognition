@@ -29,4 +29,5 @@ public class Recording {
 
     @Column
     private Long duration;
+
 }
