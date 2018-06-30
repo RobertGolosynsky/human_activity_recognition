@@ -1,6 +1,7 @@
 package com.cra.service.impl;
 
 import com.cra.domain.entity.*;
+import com.cra.domain.entity.Model;
 import com.cra.repository.ModelRepository;
 import com.cra.repository.UserRepository;
 import com.cra.service.interfaces.ModellingService;
@@ -233,7 +234,6 @@ public class ModellingServiceImpl implements ModellingService {
         }
         
         return null;
-
     }
 
 }

@@ -2,6 +2,7 @@ package com.cra.domain.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -10,6 +11,7 @@ import java.util.Calendar;
 @Entity
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Model {
 
     @Id
@@ -20,15 +22,15 @@ public class Model {
     private double score;
 
     @Column
-    private String classifierName;
+    private java.lang.String classifierName;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition="DATETIME(3)")
     private Calendar date;
 
     @Column
     private Blob classifier;
 
-    public Model(double score, String classifierName, Calendar date, Blob
+    public Model(double score, java.lang.String classifierName, Calendar date, Blob
             classifier) {
         this.score = score;
         this.classifierName = classifierName;

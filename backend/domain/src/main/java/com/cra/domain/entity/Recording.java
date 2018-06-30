@@ -22,7 +22,6 @@ public class Recording {
     private List<GyroData> data;
 
     //@Temporal(TemporalType.TIMESTAMP)
-    //@Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @Column(columnDefinition="DATETIME(3)")
     private Calendar date;
 
