@@ -4,6 +4,7 @@ import com.cra.domain.entity.RecordType;
 import com.cra.domain.entity.Recording;
 import com.cra.domain.entity.User;
 import com.cra.model.json.response.CRAErrorResponse;
+import com.cra.repository.RecordingRepository;
 import com.cra.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DataController {
 
+    private final RecordingRepository recordingRepository;
     private final UserRepository userRepository;
 
     @PostMapping("/save")
@@ -36,17 +37,12 @@ public class DataController {
             return ResponseEntity.badRequest()
                     .body(new CRAErrorResponse("Recording already exists!"));
         } else {
-            user.getRecordings().add(recording);
-            final User savedUser = userRepository.save(user);
+            final Recording saved = recordingRepository.save(recording);
+            user.getRecordings().add(saved);
+            userRepository.save(user);
 
-            final Recording saved = savedUser
-                    .getRecordings()
-                    .stream()
-                    .filter(p -> p.getDate().equals(recording.getDate()))
-                    .findFirst()
-                    .get();
             final RecordingDTO result = new RecordingDTO(saved.getId(), saved.getDate(), saved.getType(),
-                    saved.getData().size());
+                    saved.getDuration());
 
             return ResponseEntity.ok(result);
         }
@@ -65,23 +61,13 @@ public class DataController {
             return ResponseEntity.badRequest()
                     .body(new CRAErrorResponse("One of recordings already exists!"));
         } else {
-            user.getRecordings().addAll(recordings);
+            final List<Recording> savedRecordings = recordingRepository.save(recordings);
+            user.getRecordings().addAll(savedRecordings);
+            userRepository.save(user);
 
-            final Set<Calendar> dates = recordings
+            final List<RecordingDTO> result = savedRecordings
                     .stream()
-                    .map(p -> p.getDate())
-                    .collect(Collectors.toSet());
-            final User savedUser  = userRepository.save(user);
-
-            final List<Recording> saved = savedUser
-                    .getRecordings()
-                    .stream()
-                    .filter(p -> dates.contains(p.getDate()))
-                    .collect(Collectors.toList());
-
-            final List<RecordingDTO> result = saved
-                    .stream()
-                    .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getData().size()))
+                    .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getDuration()))
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(result);
@@ -94,8 +80,9 @@ public class DataController {
         final List<RecordingDTO> result = user
                 .getRecordings()
                 .stream()
-                .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getData().size()))
+                .map(p -> new RecordingDTO(p.getId(), p.getDate(), p.getType(), p.getDuration()))
                 .collect(Collectors.toList());
+
         return result;
     }
 
@@ -115,7 +102,7 @@ public class DataController {
         private final Long id;
         private final Calendar date;
         private final RecordType type;
-        private final int length;
+        private final Long duration;
     }
 
 }
