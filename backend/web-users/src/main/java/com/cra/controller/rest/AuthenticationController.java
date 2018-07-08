@@ -7,6 +7,7 @@ import com.cra.service.TokenUtils;
 import com.cra.service.interfaces.ExtendedUserDetailsService;
 import com.cra.service.interfaces.RegistrationService;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,9 +81,9 @@ public class AuthenticationController {
     }
 
     @Getter
-    @RequiredArgsConstructor
+    @NoArgsConstructor
     private static final class RegistrationInfo {
-        private final String login;
-        private final String password;
+        private String login;
+        private String password;
     }
 }
