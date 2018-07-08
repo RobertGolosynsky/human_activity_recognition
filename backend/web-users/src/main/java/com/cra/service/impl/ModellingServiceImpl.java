@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -159,8 +160,8 @@ public class ModellingServiceImpl implements ModellingService {
                             .average().getAsDouble();
                 }).collect(Collectors.toList());
     }
-
-    public Model trainModel(ModelConfig modelConfig, List<Recording> recordingList, User user) {
+    @Override
+    public Instances createDataset(ModelConfig modelConfig, List<Recording> recordingList){
         final Attribute xAverage = new Attribute("xAverage");
         final Attribute yAverage = new Attribute("yAverage");
         final Attribute zAverage = new Attribute("zAverage");
@@ -189,24 +190,32 @@ public class ModellingServiceImpl implements ModellingService {
 
         partitions.stream()
                 .forEach(p -> {
+
                     final List<Map<Coordinate, Double>> average = extractAverage(p);
                     final List<Map<Coordinate, Double>> variance = extractVariance(p, average);
                     final List<Double> magnitudeVar = extractMagnitudeVariance(extractMagnitude(p));
+                    IntStream.range(0, average.size()).forEach(i->{
+                        final Instance instance = new DenseInstance(8);
+                        int index = partitions.indexOf(p);
 
-                    final Instance instance = new DenseInstance(8);
-                    int index = partitions.indexOf(p);
+                        instance.setValue(xAverage, average.get(i).get(Coordinate.X));
+                        instance.setValue(yAverage, average.get(i).get(Coordinate.Y));
+                        instance.setValue(zAverage, average.get(i).get(Coordinate.Z));
+                        instance.setValue(xVar, variance.get(i).get(Coordinate.X));
+                        instance.setValue(yVar, variance.get(i).get(Coordinate.Y));
+                        instance.setValue(zVar, variance.get(i).get(Coordinate.Z));
+                        instance.setValue(magnitVar, magnitudeVar.get(i));
+                        instance.setValue(cls, recordingList.get(index).getType().toString());
 
-                    instance.setValue(xAverage, average.get(index).get(Coordinate.X));
-                    instance.setValue(yAverage, average.get(index).get(Coordinate.Y));
-                    instance.setValue(zAverage, average.get(index).get(Coordinate.Z));
-                    instance.setValue(xVar, variance.get(index).get(Coordinate.X));
-                    instance.setValue(yVar, variance.get(index).get(Coordinate.Y));
-                    instance.setValue(zVar, variance.get(index).get(Coordinate.Z));
-                    instance.setValue(magnitVar, magnitudeVar.get(index));
-                    instance.setValue(cls, recordingList.get(index).getType().toString());
+                        instances.add(instance);
+                    });
 
-                    instances.add(instance);
                 });
+        return instances;
+    }
+
+    public Model trainModel(ModelConfig modelConfig, List<Recording> recordingList, User user) {
+        final Instances instances = createDataset(modelConfig, recordingList);
 
         try {
             final Classifier cModel = new NaiveBayes();
