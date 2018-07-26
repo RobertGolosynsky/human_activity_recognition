@@ -103,5 +103,5 @@ out
 test-output
 .gradletasknamecache
 
-web-customers/src/main/resources/application-local.properties
-web-moderators/src/main/resources/application-local.properties
+web-users/src/main/resources/application.properties
+web-users/src/main/resources/application-local.properties
