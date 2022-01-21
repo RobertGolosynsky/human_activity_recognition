@@ -21,7 +21,7 @@
         <spring-boot.version>1.5.8.RELEASE</spring-boot.version>
         <spring-framework.version>4.1.6.RELEASE</spring-framework.version>
         <jjwt.version>0.4</jjwt.version>
-        <h2.version>1.4.188</h2.version>
+        <h2.version>2.1.210</h2.version>
         <apache-commons.version>3.0</apache-commons.version>
         <junit.version>4.12</junit.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
